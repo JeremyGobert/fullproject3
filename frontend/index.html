@@ -1,0 +1,38 @@
+<head>
+    <title>UnWashed Bot</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+    <link rel="shortcut icon" href="img/favi.png" />
+    
+</head>
+    
+<body>
+    
+   
+    <div class="vanboven">
+        <h1>name</h1>
+    </div>
+
+    <div class="row">
+        <div class="column">
+            <form action="http://localhost:3000/save" method="post">
+                <input type="file" name="inpFile" id="inpFile">
+                <input type="url" name="inpFileVal" value="" id="inpFileVal" hidden>
+                <input type="submit">
+            </form>
+            <div class="image-preview" id="imagePreview">
+                <img src="" alt="" class="image-preview__image">
+                <span class="image-preview__text">Image Preview</span>
+            </div>
+        </div>
+        
+
+        <div class="column" >
+          <div class="chat">
+              <h2>Chat</h2>
+              <iframe width="580" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/6c804fa4-0300-4f71-8999-7e88712148c9"></iframe>
+          </div>
+        </div>
+      </div>
+
+</body>
