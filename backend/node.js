@@ -26,10 +26,10 @@ app.get('/', (req, res) => {
 app.post('/save', (req, res) => {
     async function run() {
         try {
-            const file = req.body;
-            const img = file.inpFileVal;
+            const file = await req.body;
+            const img = await file.inpFileVal;
     
-            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            var data = await img.replace(/^data:image\/\w+;base64,/, "");
             var buf = Buffer.from(data, 'base64');
 
             fs.writeFile('./test2.jpg', buf, (err) => {
@@ -37,7 +37,7 @@ app.post('/save', (req, res) => {
                     console.log(err);
                     throw err;
                 }
-            console.log('file save successfully');
+                console.log('file save successfully');
             });
         
         } catch(err){
