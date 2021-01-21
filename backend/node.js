@@ -24,22 +24,29 @@ app.get('/', (req, res) => {
 });
 
 app.post('/save', (req, res) => {
-        const file = req.body;
-        const img = file.inpFileVal;
+    async function run() {
+        try {
+            const file = req.body;
+            const img = file.inpFileVal;
     
-        var data = img.replace(/^data:image\/\w+;base64,/, "");
-        var buf = Buffer.from(data, 'base64');
+            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            var buf = Buffer.from(data, 'base64');
 
-
-        fs.writeFile('./test2.jpg', buf, (err) => {
-            if (err) {
-                console.log(err);
-                throw err;
-            }
+            fs.writeFile('./test2.jpg', buf, (err) => {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
             console.log('file save successfully');
         });
         
-        res.send(file.inpFileVal);
+        } catch(err){
+            console.log(err.stack);
+        } finally{
+            res.redirect('https://fullproject3-site.herokuapp.com/');
+        }
+    }
+    run().catch(console.dir);
 });
 
 
