@@ -3,6 +3,8 @@
 const fs = require('fs');
 const express = require('express');
 const bodyParser = require('body-parser');
+const { request, response } = require('express');
+const { WebhookClient } = require('dialogflow-fulfillment');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -10,7 +12,6 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(bodyParser.json());
-
 
 app.get('/', (req, res) => {
     let routes = [];
@@ -32,13 +33,7 @@ app.post('/save', (req, res) => {
             var data = await img.replace(/^data:image\/\w+;base64,/, "");
             var buf = Buffer.from(data, 'base64');
 
-            fs.writeFile('./test2.jpg', buf, (err) => {
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
-                console.log('file save successfully');
-            });
+            const write = await fs.writeFile('./test2.jpg', buf);
         
         } catch(err){
             console.log(err.stack);
@@ -49,7 +44,34 @@ app.post('/save', (req, res) => {
     run().catch(console.dir);
 });
 
+app.post('/dialogflow-fulfilment', (req, res) => {
+    dialogflowFulfilment(req, res);
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
+
+const dialogflowFulfilment = (req, res) =>{
+    const agent = new WebhookClient({req,res});
+
+    function sayHello(agent){
+        agent.add("this is from heroku");
+    }
+
+    let intentMap = new Map();
+    intentMap.set("defoult intent", sayHello);
+    agent.handleRequest(intentMap);
+};
+
+async function loadAllData(api) {
+    const resp = await fetch(api);
+    const data = await resp.json();
+    return data;
+}
+
+function setHtmlData(){
+
+    let link = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=belgium&inputtype=textquery&key=AIzaSyAyiPIrfJd1nzyZYu4myv4w-5ubdkxzjU0`;
+    loadAllData(link);
+}
