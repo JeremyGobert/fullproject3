@@ -103,4 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-travelbot-pxus-a8cc4a2b542f.json
+.backend\travelbot-pxus-a8cc4a2b542f.json
+.travelbot-pxus-a8cc4a2b542f.json
