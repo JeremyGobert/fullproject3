@@ -82,6 +82,7 @@ app.post('/dialogflow', (req, res) => {
         const responses = await sessionClient.detectIntent(request);
         console.log('Detected intent');
         const result = responses[0].queryResult;
+        res.send(`  Response: ${result.fulfillmentText}`);
         console.log(`  Query: ${result.queryText}`);
         console.log(`  Response: ${result.fulfillmentText}`);
         if (result.intent) {
