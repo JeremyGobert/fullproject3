@@ -132,8 +132,9 @@ app.post('/translate', (req, res) => {
 
         requesting(options2, function (error, response, body) {
             if (error) throw new Error(error);
-            console.log(body);
-            res.send(body);
+            let trans = JSON.parse(body);
+            console.log(trans.data.translations[0].translatedText);
+            res.send(trans.data.translations[0].translatedText);
         });
 
     }
