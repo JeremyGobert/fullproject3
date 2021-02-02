@@ -5,7 +5,8 @@
   "main": "node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node node.js"
+    "start": "nodemon node.js",
+    "tunnel": "ngrok http 3000"
   },
   "keywords": [],
   "author": "",
