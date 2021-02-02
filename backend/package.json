@@ -18,8 +18,10 @@
     "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "node-fetch": "^2.6.1",
     "python-shell": "^2.0.3",
     "request": "^2.88.2",
+    "util": "^0.12.3",
     "uuid": "^8.3.2"
   }
 }
