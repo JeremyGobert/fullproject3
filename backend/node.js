@@ -10,7 +10,7 @@ const {
 const dialogflow = require('@google-cloud/dialogflow').v2beta1;
 const uuid = require('uuid');
 const app = express();
-const axios = require("axios").default;
+const util = require('util');
 const requesting = require('request');
 const port = process.env.PORT || 3000;
 
@@ -158,3 +158,4 @@ function setHtmlData() {
     let link = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=belgium&inputtype=textquery&key=AIzaSyAyiPIrfJd1nzyZYu4myv4w-5ubdkxzjU0`;
     loadAllData(link);
 }
+
