@@ -1,21 +1,21 @@
 <head>
     <title>UnWashed Bot</title>
     <link rel="stylesheet" href="index.css">
-    <script src="index.js"></script>
+    <!-- <script src="index.js"></script> -->
     <link rel="shortcut icon" href="img/favi.png" />
-    
+
 </head>
-    
+
 <body>
-    
-   
+
+
     <div class="vanboven">
         <h1>name</h1>
     </div>
 
     <div class="row">
         <div class="column">
-            <form action="https://ce302f7161b6.ngrok.io/save" method="post">
+            <form action="https://42dabc1426c4.ngrok.io/save" method="post">
                 <input type="file" name="inpFile" id="inpFile">
                 <input type="url" name="inpFileVal" value="" id="inpFileVal" hidden>
                 <input type="submit">
@@ -24,23 +24,36 @@
                 <img src="" alt="" class="image-preview__image">
                 <span class="image-preview__text">Image Preview</span>
             </div>
-            <form action=" https://ce302f7161b6.ngrok.io/getLanHTML" method="get">
-                <label for="from">Choose your lan from the list:</label>
+            <form  onsubmit="submit()"  id="trans">
+                <label for="from">Choose bitch:</label>
                 <input list="lans" name="from" id="from">
                 <datalist id="lans">
-
+                    <option value="af"><option value="am"><option value="ar"><option value="az"><option value="be"><option value="bg"><option value="bn"><option value="bs"><option value="ca"><option value="ceb"><option value="co"><option value="cs"><option value="cy"><option value="da"><option value="de"><option value="el"><option value="en"><option value="eo"><option value="es"><option value="et"><option value="eu"><option value="fa"><option value="fi"><option value="fr"><option value="fy"><option value="ga"><option value="gd"><option value="gl"><option value="gu"><option value="ha"><option value="haw"><option value="he"><option value="hi"><option value="hmn"><option value="hr"><option value="ht"><option value="hu"><option value="hy"><option value="id"><option value="ig"><option value="is"><option value="it"><option value="iw"><option value="ja"><option value="jw"><option value="ka"><option value="kk"><option value="km"><option value="kn"><option value="ko"><option value="ku"><option value="ky"><option value="la"><option value="lb"><option value="lo"><option value="lt"><option value="lv"><option value="mg"><option value="mi"><option value="mk"><option value="ml"><option value="mn"><option value="mr"><option value="ms"><option value="mt"><option value="my"><option value="ne"><option value="nl"><option value="no"><option value="ny"><option value="or"><option value="pa"><option value="pl"><option 
+                        value="ps"><option value="pt"><option value="ro"><option value="ru"><option value="rw"><option value="sd"><option value="si"><option value="sk"><option value="sl"><option value="sm"><option value="sn"><option value="so"><option value="sq"><option value="sr"><option value="st"><option value="su"><option value="sv"><option value="sw"><option value="ta"><option value="te"><option value="tg"><option value="th"><option value="tk"><option value="tl"><option value="tr"><option value="tt"><option value="ug"><option value="uk"><option value="ur"><option value="uz"><option value="vi"><option value="xh"><option value="yi"><option value="yo"><option value="zh"><option value="zh-CN"><option value="zh-TW"><option value="zu">
                 </datalist>
+                <br>
+                <label for="to">Choose again bitch:</label>
+                <input list="trg" name="to" id="to">
+                <datalist id="trg">
+                    <option value="af"><option value="am"><option value="ar"><option value="az"><option value="be"><option value="bg"><option value="bn"><option value="bs"><option value="ca"><option value="ceb"><option value="co"><option value="cs"><option value="cy"><option value="da"><option value="de"><option value="el"><option value="en"><option value="eo"><option value="es"><option value="et"><option value="eu"><option value="fa"><option value="fi"><option value="fr"><option value="fy"><option value="ga"><option value="gd"><option value="gl"><option value="gu"><option value="ha"><option value="haw"><option value="he"><option value="hi"><option value="hmn"><option value="hr"><option value="ht"><option value="hu"><option value="hy"><option value="id"><option value="ig"><option value="is"><option value="it"><option value="iw"><option value="ja"><option value="jw"><option value="ka"><option value="kk"><option value="km"><option value="kn"><option value="ko"><option value="ku"><option value="ky"><option value="la"><option value="lb"><option value="lo"><option value="lt"><option value="lv"><option value="mg"><option value="mi"><option value="mk"><option value="ml"><option value="mn"><option value="mr"><option value="ms"><option value="mt"><option value="my"><option value="ne"><option value="nl"><option value="no"><option value="ny"><option value="or"><option value="pa"><option value="pl"><option 
+                        value="ps"><option value="pt"><option value="ro"><option value="ru"><option value="rw"><option value="sd"><option value="si"><option value="sk"><option value="sl"><option value="sm"><option value="sn"><option value="so"><option value="sq"><option value="sr"><option value="st"><option value="su"><option value="sv"><option value="sw"><option value="ta"><option value="te"><option value="tg"><option value="th"><option value="tk"><option value="tl"><option value="tr"><option value="tt"><option value="ug"><option value="uk"><option value="ur"><option value="uz"><option value="vi"><option value="xh"><option value="yi"><option value="yo"><option value="zh"><option value="zh-CN"><option value="zh-TW"><option value="zu">
+                </datalist>
+                <br>
+                <label for="trans">Now write bby write:</label>
+                <input type="text" name="translate" id="translate">
+                <br>
                 <input type="submit">
-              </form>
+            </form>
         </div>
-        
 
-        <div class="column" >
-          <div class="chat">
-              <h2>Chat</h2>
-              <iframe width="580" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/6c804fa4-0300-4f71-8999-7e88712148c9"></iframe>
-          </div>
+
+        <div class="column">
+            <div class="chat">
+                <h2>Chat</h2>
+                <iframe width="580" height="430" allow="microphone;"
+                    src="https://console.dialogflow.com/api-client/demo/embedded/6c804fa4-0300-4f71-8999-7e88712148c9"></iframe>
+            </div>
         </div>
-      </div>
-
+    </div>
+    <script src="index.js"></script>
 </body>

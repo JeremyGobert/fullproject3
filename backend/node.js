@@ -115,74 +115,47 @@ app.post('/dialogflow', express.json(), (req, res) => {
 });
 
 
-app.get('/getLanHTML', (req, res) => {
-    console.log("hey");
-    let htmlString = '';
-
-    async function translation() {
-        console.log("hey");
-
-        const options = {
-            method: 'GET',
-            url: 'https://google-translate1.p.rapidapi.com/language/translate/v2/languages',
-            headers: {
-                'accept-encoding': 'application/gzip',
-                'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
-                'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
-                useQueryString: true
-            }
-        };
-
-        requesting(options, function (error, response, body) {
-            if (error) throw new Error(error);
-            console.log("hey");
-            let lang = JSON.parse(body);
-            console.log(lang.data.languages);
-            lang.data.languages.forEach(lang => {
-                htmlString += `<option value="${lang.language}">`;
-            });
-            console.log(htmlString);
-        });
-    }
-    translation();
-
-});
-
-
 app.post('/translate', (req, res) => {
-
     async function translation() {
-        let origin = req.query.translate;
-        let from = req.query.from;
-        let to = req.query.to;
+        try {
+            let origin = req.body.translate;
+            let from = req.body.from;
+            let to = req.body.to;
 
-        const options2 = {
-            method: 'POST',
-            url: 'https://google-translate1.p.rapidapi.com/language/translate/v2',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'accept-encoding': 'application/gzip',
-                'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
-                'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
-                useQueryString: true
-            },
-            form: {
-                q: origin,
-                source: from,
-                target: to
-            }
-        };
+            const options2 = {
+                method: 'POST',
+                url: 'https://google-translate1.p.rapidapi.com/language/translate/v2',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'accept-encoding': 'application/gzip',
+                    'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
+                    'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
+                    useQueryString: true
+                },
+                form: {
+                    q: origin,
+                    source: from,
+                    target: to
+                }
+            };
 
-        requesting(options2, function (error, response, body) {
-            if (error) throw new Error(error);
-            let trans = JSON.parse(body);
-            console.log(trans.data.translations[0].translatedText);
-            res.send(trans.data.translations[0].translatedText);
-        });
+            requesting(options2, function (error, response, body) {
+                if (error) throw new Error(error);
+                let trans = JSON.parse(body);
+                console.log(trans);
+                console.log(trans.data);
+                console.log(trans.data.translations[0].translatedText);
+                res.send(trans.data.translations[0].translatedText);
 
+            });
+        } catch (err) {
+            console.log(err.stack);
+        }
     }
     translation();
 });
+
+
 
 
 app.post('/speech', (req, res) => {
