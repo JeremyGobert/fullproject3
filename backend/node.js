@@ -68,33 +68,42 @@ app.post('/dialogflow', express.json(), (req, res) => {
 
     async function places(agent) {
         let location = agent.parameters["geo-city"];
-        let lel = agent.parameters["geo-city"];
+        let iets = agent.parameters["@map-sort"];
         var agentString = "";
         let lon = 0;
         let lat = 0;
-
+        console.log("fase 1");
+        console.time("api");
+        agent.add("lets see");
+        /* agent.setFollowupEvent("lets see"); */
         axios.get(`https://api.opentripmap.com/0.1/en/places/geoname?name=${location}&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
-            .catch(function (error) {
-                console.log(error);
-                console.log('fuck');
-            }).then(function (response) {
+            .then(function (response) {
+                console.log("fase 2");
                 let body = response.data;
                 lon = body.lon;
                 lat = body.lat;
-                axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=10&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
-                    .catch(function (error) {
-                        console.log(error);
-                        console.log('fuck');
-                    }).then(function (response) {
+                agent.add("brussels is located here: lon " + lon + ", lat " + lat);
+                axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=5&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
+                    .then(function (response) {
+                        console.log("fase 3");
                         let body = response.data;
                         agentString = "Here is a list of some interesting places to vistit in " + location + ": ";
                         body.features.forEach(place => {
                             agentString += place.properties.name + ", \n";
                         });
+                        console.log("fase 4");
                         console.log(agentString);
-                        agent.add(agentString);
+                        console.timeEnd("api");
+                        agent.add(agentString); /* "Use google maps you lazy fuck" */
+                    }).catch(function (error) {
+                        console.log(error);
+                        console.log('fuck');
                     });
+            }).catch(function (error) {
+                console.log(error);
+                console.log('fuck');
             });
+        /* "Use google maps you lazy fuck" */
     }
 
 
@@ -103,6 +112,40 @@ app.post('/dialogflow', express.json(), (req, res) => {
     intentMap.set('Default Place Intent', places);
 
     agent.handleRequest(intentMap);
+});
+
+
+app.get('/getLanHTML', (req, res) => {
+    console.log("hey");
+    let htmlString = '';
+
+    async function translation() {
+        console.log("hey");
+
+        const options = {
+            method: 'GET',
+            url: 'https://google-translate1.p.rapidapi.com/language/translate/v2/languages',
+            headers: {
+                'accept-encoding': 'application/gzip',
+                'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
+                'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
+                useQueryString: true
+            }
+        };
+
+        requesting(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            console.log("hey");
+            let lang = JSON.parse(body);
+            console.log(lang.data.languages);
+            lang.data.languages.forEach(lang => {
+                htmlString += `<option value="${lang.language}">`;
+            });
+            console.log(htmlString);
+        });
+    }
+    translation();
+
 });
 
 
@@ -129,55 +172,55 @@ app.post('/translate', (req, res) => {
                 target: to
             }
         };
-        var options = {
-            method: 'POST',
-            url: 'https://google-translate1.p.rapidapi.com/language/translate/v2',
-            headers: {
-                'content-type': 'application/x-www-form-urlencoded',
-                'accept-encoding': 'application/gzip',
-                'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
-                'x-rapidapi-host': 'google-translate1.p.rapidapi.com'
-            },
-            data: {
-                q: 'Hello, world!',
-                source: 'en',
-                target: 'es'
-            }
-        };
 
-        axios.request(options).then(function (response) {
-            console.log(response.data);
-            let trans = JSON.parse(response.data);
-            console.log(trans.data.translations[0].translatedText);
-            res.send(trans.data.translations[0].translatedText);
-        }).catch(function (error) {
-            console.error(error);
-        });
-
-        /* requesting(options2, function (error, response, body) {
+        requesting(options2, function (error, response, body) {
             if (error) throw new Error(error);
             let trans = JSON.parse(body);
             console.log(trans.data.translations[0].translatedText);
             res.send(trans.data.translations[0].translatedText);
-        }); */
+        });
 
     }
     translation();
 });
 
 
+app.post('/speech', (req, res) => {
+    let txt = req.query.speech;
+    const options = {
+        method: 'GET',
+        url: 'https://voicerss-text-to-speech.p.rapidapi.com/',
+        qs: {
+            key: 'b444098b2ac043208c2a28ae81257e0e',
+            src: txt,
+            hl: 'en-us',
+            r: '0',
+            c: 'mp3',
+            f: '44khz_16bit_stereo',
+            b64: true
+        },
+        headers: {
+            'x-rapidapi-key': '0f8cf47e8fmsh7eb7592c83f2397p16b37fjsn59e20603886f',
+            'x-rapidapi-host': 'voicerss-text-to-speech.p.rapidapi.com',
+            useQueryString: true
+        }
+    };
+
+    requesting(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        const sessionId = uuid.v4();
+
+        async function makeMP3() {
+            const file = await body;
+            const writeFile = util.promisify(fs.writeFile);
+            await writeFile(sessionId + '.mp3', file, 'base64');
+            console.log('Audio content sessionId6 written to file: ' + sessionId + '.mp3');
+            res.send("file has been made andis named: " + sessionId + ".mp3");
+        }
+        makeMP3();
+    });
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-
-
-async function loadAllData(api) {
-    const resp = await fetch(api);
-    const data = await resp.json();
-    return data;
-}
-
-function setHtmlData() {
-    let link = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=belgium&inputtype=textquery&key=AIzaSyAyiPIrfJd1nzyZYu4myv4w-5ubdkxzjU0`;
-    loadAllData(link);
-}

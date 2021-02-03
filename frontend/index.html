@@ -15,7 +15,7 @@
 
     <div class="row">
         <div class="column">
-            <form action="https://fullproject3-api.herokuapp.com/save" method="post">
+            <form action="https://ce302f7161b6.ngrok.io/save" method="post">
                 <input type="file" name="inpFile" id="inpFile">
                 <input type="url" name="inpFileVal" value="" id="inpFileVal" hidden>
                 <input type="submit">
@@ -24,6 +24,14 @@
                 <img src="" alt="" class="image-preview__image">
                 <span class="image-preview__text">Image Preview</span>
             </div>
+            <form action=" https://ce302f7161b6.ngrok.io/getLanHTML" method="get">
+                <label for="from">Choose your lan from the list:</label>
+                <input list="lans" name="from" id="from">
+                <datalist id="lans">
+
+                </datalist>
+                <input type="submit">
+              </form>
         </div>
         
 
