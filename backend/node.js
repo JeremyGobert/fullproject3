@@ -15,11 +15,6 @@ const app = express();
 const util = require('util');
 const requesting = require('request');
 const axios = require('axios');
-/* const {
-    dialogflow,
-    Image,
-} = require('actions-on-google');
-const dialog = dialogflow(); */
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({
@@ -66,7 +61,10 @@ app.post('/dialogflow', express.json(), (req, res) => {
         request: req,
         response: res
     });
-
+/*     var agentString = "";
+    let lon = 0;
+    let lat = 0;
+ */
     function welcome() {
         agent.add('Welcome to my agent!');
     }
@@ -75,51 +73,66 @@ app.post('/dialogflow', express.json(), (req, res) => {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    /* async function waitone(agent) {
-        console.log("fase 1");
+
+/*     async function follow2(agent) {
+        console.log("yeet3");
+        if (agentString.length !== null){
+            agent.add(agentString);
+        }else{
+            await sleep(3000);
+            agent.add("this is fucked");
+        }
+    }
+
+    async function follow1(agent) {
+        console.log("yeet2");
+        if (agentString.length !== null){
+            agent.add(agentString);
+        }else{
+            await sleep(3000);
+            agent.setFollowupEvent("waittwo");
+        }
+    }
+
+    async function follow(agent) {
+        console.log("yeet1");
+        if (agentString.length !== null){
+            agent.add(agentString);
+        }else{
+            await sleep(3000);
+            agent.setFollowupEvent("waitone");
+        }
+    } */
+
+    function places(agent) {
         var agentString = "";
         let lon = 0;
         let lat = 0;
-        axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=5&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
+        let location = agent.parameters["geo-city"];
+        let iets = agent.parameters["@map-sort"];
+        agent.setFollowupEvent("waitone");
+        console.log('wait');
+        console.log(agentString);
+        console.log('wait');
+        axios.get(`https://api.opentripmap.com/0.1/en/places/geoname?name=${location}&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
+            .then(function (response) {
+                let body = response.data;
+                lon = body.lon;
+                lat = body.lat;
+                console.log('latlon');
+                axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=5&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
                     .then(function (response) {
                         let body = response.data;
                         agentString = "Here is a list of some interesting places to vistit in " + location + ": ";
                         body.features.forEach(place => {
                             agentString += place.properties.name + ", \n";
                         });
+                        agent.add(agentString);
                         console.log(agentString);
                     }).catch(function (error) {
                         console.log(error);
                         console.log('fuck');
                     });
-        agent.setFollowupEvent('waittwo');
-    }
-
-    async function waittwo(agent) {
-        console.log("fase 2");
-        await sleep(4000);
-    }
-
-    async function wait(agent) {
-        console.log("fase 2");
-        console.log(agent);
-        await sleep(3500);
-        agent.setFollowupEvent("waitone");
-    } */
-
-    function places(agent) {
-        let location = agent.parameters["geo-city"];
-        let iets = agent.parameters["@map-sort"];
-        var agentString = "";
-        let lon = 0;
-        let lat = 0;
-        agent.setFollowupEvent("wait");
-        axios.get(`https://api.opentripmap.com/0.1/en/places/geoname?name=${location}&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
-            .then(function (response) {
-                let body = response.data;
-                lon = body.lon;
-                lat = body.lat;
-                agent.add("fuck");
             }).catch(function (error) {
                 console.log(error);
                 console.log('fuck');
@@ -129,6 +142,9 @@ app.post('/dialogflow', express.json(), (req, res) => {
     let intentMap = new Map();
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Place Intent', places);
+/*     intentMap.set('Default FollowUp Intent', follow);
+    intentMap.set('Default FollowUp1 Intent', follow1);
+    intentMap.set('Default FollowUp2 Intent', follow2); */
     agent.handleRequest(intentMap);
 });
 
@@ -172,8 +188,6 @@ app.post('/translate', (req, res) => {
     }
     translation();
 });
-
-
 
 
 app.post('/speech', (req, res) => {
