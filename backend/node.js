@@ -15,6 +15,11 @@ const app = express();
 const util = require('util');
 const requesting = require('request');
 const axios = require('axios');
+/* const {
+    dialogflow,
+    Image,
+} = require('actions-on-google');
+const dialog = dialogflow(); */
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.urlencoded({
@@ -66,51 +71,64 @@ app.post('/dialogflow', express.json(), (req, res) => {
         agent.add('Welcome to my agent!');
     }
 
-    async function places(agent) {
-        let location = agent.parameters["geo-city"];
-        let iets = agent.parameters["@map-sort"];
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    /* async function waitone(agent) {
+        console.log("fase 1");
         var agentString = "";
         let lon = 0;
         let lat = 0;
-        console.log("fase 1");
-        console.time("api");
-        agent.add("lets see");
-        /* agent.setFollowupEvent("lets see"); */
-        axios.get(`https://api.opentripmap.com/0.1/en/places/geoname?name=${location}&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
-            .then(function (response) {
-                console.log("fase 2");
-                let body = response.data;
-                lon = body.lon;
-                lat = body.lat;
-                agent.add("brussels is located here: lon " + lon + ", lat " + lat);
-                axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=5&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
+        axios.get(`https://api.opentripmap.com/0.1/en/places/radius?radius=5000&lon=${lon}&lat=${lat}&limit=5&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
                     .then(function (response) {
-                        console.log("fase 3");
                         let body = response.data;
                         agentString = "Here is a list of some interesting places to vistit in " + location + ": ";
                         body.features.forEach(place => {
                             agentString += place.properties.name + ", \n";
                         });
-                        console.log("fase 4");
                         console.log(agentString);
-                        console.timeEnd("api");
-                        agent.add(agentString); /* "Use google maps you lazy fuck" */
                     }).catch(function (error) {
                         console.log(error);
                         console.log('fuck');
                     });
+        agent.setFollowupEvent('waittwo');
+    }
+
+    async function waittwo(agent) {
+        console.log("fase 2");
+        await sleep(4000);
+    }
+
+    async function wait(agent) {
+        console.log("fase 2");
+        console.log(agent);
+        await sleep(3500);
+        agent.setFollowupEvent("waitone");
+    } */
+
+    function places(agent) {
+        let location = agent.parameters["geo-city"];
+        let iets = agent.parameters["@map-sort"];
+        var agentString = "";
+        let lon = 0;
+        let lat = 0;
+        agent.setFollowupEvent("wait");
+        axios.get(`https://api.opentripmap.com/0.1/en/places/geoname?name=${location}&apikey=5ae2e3f221c38a28845f05b62d1ac562a2f1db0199e756e903a2a654`)
+            .then(function (response) {
+                let body = response.data;
+                lon = body.lon;
+                lat = body.lat;
+                agent.add("fuck");
             }).catch(function (error) {
                 console.log(error);
                 console.log('fuck');
             });
-        /* "Use google maps you lazy fuck" */
     }
-
 
     let intentMap = new Map();
     intentMap.set('Default Welcome Intent', welcome);
     intentMap.set('Default Place Intent', places);
-
     agent.handleRequest(intentMap);
 });
 
@@ -201,7 +219,7 @@ app.post('/talk', (req, res) => {
     console.log(req);
     console.log(req.body);
     console.log(origin, from, to);
-    
+
     async function speech(trans) {
         let txt = trans;
         const options = {
