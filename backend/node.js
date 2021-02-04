@@ -194,6 +194,85 @@ app.post('/speech', (req, res) => {
     });
 });
 
+app.post('/talk', (req, res) => {
+    let origin = req.body.translate;
+    let from = req.body.from;
+    let to = req.body.to;
+    console.log(req);
+    console.log(req.body);
+    console.log(origin, from, to);
+    
+    async function speech(trans) {
+        let txt = trans;
+        const options = {
+            method: 'GET',
+            url: 'https://voicerss-text-to-speech.p.rapidapi.com/',
+            qs: {
+                key: 'b444098b2ac043208c2a28ae81257e0e',
+                src: txt,
+                hl: 'en-us',
+                r: '0',
+                c: 'mp3',
+                f: '44khz_16bit_stereo',
+                b64: true
+            },
+            headers: {
+                'x-rapidapi-key': '0f8cf47e8fmsh7eb7592c83f2397p16b37fjsn59e20603886f',
+                'x-rapidapi-host': 'voicerss-text-to-speech.p.rapidapi.com',
+                useQueryString: true
+            }
+        };
+
+        requesting(options, function (error, response, body) {
+            if (error) throw new Error(error);
+            const sessionId = uuid.v4();
+
+            async function makeMP3() {
+                const file = await body;
+                const writeFile = util.promisify(fs.writeFile);
+                await writeFile(sessionId + '.mp3', file, 'base64');
+                console.log('Audio content sessionId6 written to file: ' + sessionId + '.mp3');
+                res.send("file has been made andis named: " + sessionId + ".mp3");
+            }
+            makeMP3();
+        });
+    }
+    async function translation() {
+        try {
+            const options2 = {
+                method: 'POST',
+                url: 'https://google-translate1.p.rapidapi.com/language/translate/v2',
+                headers: {
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'accept-encoding': 'application/gzip',
+                    'x-rapidapi-key': '2bc4ce673fmshc52b545e3b0cb23p114533jsn02827fd189e0',
+                    'x-rapidapi-host': 'google-translate1.p.rapidapi.com',
+                    useQueryString: true
+                },
+                form: {
+                    q: origin,
+                    source: from,
+                    target: to
+                }
+            };
+
+            requesting(options2, function (error, response, body) {
+                if (error) throw new Error(error);
+                let trans = JSON.parse(body);
+                console.log(trans);
+                console.log(trans.data);
+                console.log(trans.data.translations[0].translatedText);
+                let talk = trans.data.translations[0].translatedText;
+                speech(talk);
+            });
+        } catch (err) {
+            console.log(err.stack);
+        }
+    }
+    translation();
+
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
