@@ -8,6 +8,13 @@ window.onload = () => {
     const previewImage = previewContainer.querySelector(".image-preview__image");
     const previewText = previewContainer.querySelector(".image-preview__text");
 
+const deepfake = document.getElementById("deepfake", function(){
+
+
+});
+
+
+
     inpFile.addEventListener("change", function () {
         const file = this.files[0];
 
